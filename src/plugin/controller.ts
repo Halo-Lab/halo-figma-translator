@@ -1,26 +1,52 @@
-figma.showUI(__html__);
+var ELEMS = [];
+var TEXTS = [];
+
+figma.showUI(__html__, {width: 300, height: 215});
 
 figma.ui.onmessage = (msg) => {
-    if (msg.type === 'create-rectangles') {
-        const nodes = [];
+    if (msg.type === 'get-text') {
+        const {selection} = figma.currentPage;
 
-        for (let i = 0; i < msg.count; i++) {
-            const rect = figma.createRectangle();
-            rect.x = i * 150;
-            rect.fills = [{type: 'SOLID', color: {r: 1, g: 0.5, b: 0}}];
-            figma.currentPage.appendChild(rect);
-            nodes.push(rect);
+        if (selection) {
+            ELEMS = [];
+            TEXTS = [];
+
+            selection.forEach((node) => {
+                const elem: any = node;
+                const {type} = node;
+
+                if (type !== 'TEXT') {
+                    const textElems = elem.findAll((n) => n.type === 'TEXT');
+                    if (textElems) {
+                        ELEMS = [...ELEMS, ...textElems];
+                    }
+                } else {
+                    ELEMS = [...ELEMS, node];
+                }
+            });
+
+            ELEMS.forEach((elem) => {
+                TEXTS.push({Text: elem.characters});
+            });
+
+            figma.ui.postMessage({type: 'get-translate', texts: TEXTS});
+        } else {
+            figma.ui.postMessage({type: 'done'});
         }
-
-        figma.currentPage.selection = nodes;
-        figma.viewport.scrollAndZoomIntoView(nodes);
-
-        // This is how figma responds back to the ui
-        figma.ui.postMessage({
-            type: 'create-rectangles',
-            message: `Created ${msg.count} Rectangles`,
-        });
     }
 
-    figma.closePlugin();
+    if (msg.type === 'update-text') {
+        const {data} = msg;
+
+        ELEMS.forEach((elem, index) => {
+            const translate = data[index].translations[0].text;
+            figma.loadFontAsync(elem.fontName).then(() => {
+                elem.characters = translate;
+            });
+        });
+
+        figma.ui.postMessage({type: 'done'});
+    }
+
+    // figma.closePlugin();
 };

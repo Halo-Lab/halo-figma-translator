@@ -1,37 +1,28 @@
+:root {
+    --color-white: #fff;
+    --color-black: #000;
+    --color-primary: #ffda93;
+}
+
 body {
-    font: 12px sans-serif;
+    font: 14px sans-serif;
     text-align: center;
     margin: 20px;
 }
+
 button {
+    width: 100%;
     border-radius: 5px;
-    background: white;
-    color: black;
+    background: var(--color-white);
+    color: var(--color-black);
     border: none;
     padding: 8px 15px;
-    margin: 0 5px;
-    box-shadow: inset 0 0 0 1px black;
+    border: 1px solid var(--color-black);
     outline: none;
+    transition: 0.2s;
+    cursor: pointer;
 }
-#create {
-    box-shadow: none;
-    background: #18a0fb;
-    color: white;
-}
-input {
-    border: none;
-    outline: none;
-    padding: 8px;
-}
-input:hover {
-    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-}
-button:focus {
-    box-shadow: inset 0 0 0 2px #18a0fb;
-}
-#create:focus {
-    box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.3);
-}
-input:focus {
-    box-shadow: inset 0 0 0 2px #18a0fb;
+button:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
 }
