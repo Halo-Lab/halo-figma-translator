@@ -2,6 +2,8 @@
     --color-white: #fff;
     --color-black: #000;
     --color-primary: #ffda93;
+    --color-done: #3719ca;
+    --color-error: #e5003d;
 }
 
 body {
@@ -22,7 +24,11 @@ button {
     transition: 0.2s;
     cursor: pointer;
 }
-button:hover {
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+button:hover:enabled {
     background: var(--color-primary);
     border-color: var(--color-primary);
 }

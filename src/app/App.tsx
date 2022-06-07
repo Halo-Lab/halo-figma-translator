@@ -7,29 +7,26 @@ import Icons from './components/Icons/Icons';
 
 declare function require(path: string): any;
 
+var TimeoutID;
+
 const App = ({}) => {
+    const [active, setActive] = React.useState(true);
     const [loading, setLoading] = React.useState(false);
     const [source, setSource] = React.useState(null);
     const [target, setTarget] = React.useState(null);
 
-    const onTest = () => {
-        if (!loading) {
-            setLoading(true);
-            parent.postMessage(
-                {
-                    pluginMessage: {
-                        type: 'get-text',
-                    },
-                },
-                '*'
-            );
-        }
-    };
+    const ref = React.useRef(null);
 
     React.useEffect(() => {
         window.onmessage = (event) => {
-            const {type, texts} = event.data.pluginMessage;
+            const {type} = event.data.pluginMessage;
+            if (type === 'check-selection') {
+                const {status} = event.data.pluginMessage;
+                setActive(status);
+            }
+
             if (type === 'get-translate') {
+                const {texts} = event.data.pluginMessage;
                 var xhr = new XMLHttpRequest();
                 xhr.open(
                     'POST',
@@ -53,6 +50,7 @@ const App = ({}) => {
                         );
                     } catch (error) {
                         setLoading(false);
+                        btnStates('error');
                     }
                 };
                 xhr.send(JSON.stringify(texts));
@@ -60,9 +58,68 @@ const App = ({}) => {
 
             if (type === 'done') {
                 setLoading(false);
+                btnStates('done');
             }
         };
     }, [source, target]);
+
+    const onTranslate = () => {
+        if (!loading) {
+            setLoading(true);
+            parent.postMessage(
+                {
+                    pluginMessage: {
+                        type: 'get-text',
+                    },
+                },
+                '*'
+            );
+        }
+    };
+
+    const btnText = !active ? 'Выберите элемент' : loading ? 'Перевожу...' : 'Перевести';
+
+    const btnStates = (state: string = '') => {
+        if (!ref.current) {
+            return;
+        }
+
+        const el = ref.current;
+        switch (state) {
+            case 'done':
+                el.textContent = 'Готово!';
+                el.style.cssText = `
+                    color: var(--color-white);
+                    background: var(--color-done);
+                    border-color: var(--color-done);
+                `;
+                break;
+
+            case 'error':
+                el.textContent = 'Ошибка :(';
+                el.style.cssText = `
+                    color: var(--color-white);
+                    background: var(--color-error);
+                    border-color: var(--color-error);
+                `;
+                break;
+
+            default:
+                el.textContent = btnText;
+                el.style.cssText = `
+                    color: inherit;
+                    background: inherit;
+                    border-color: inherit;
+                `;
+        }
+
+        if (state !== '') {
+            clearTimeout(TimeoutID);
+            TimeoutID = setTimeout(() => {
+                btnStates();
+            }, 2000);
+        }
+    };
 
     return (
         <div className={styles.content}>
@@ -84,8 +141,13 @@ const App = ({}) => {
                     setTarget(item.key);
                 }}
             />
-            <button className={`${styles.btn} ${loading ? styles.btn__active : ''}`} onClick={() => onTest()}>
-                {loading ? 'Перевожу...' : 'Перевести'}
+            <button
+                ref={ref}
+                className={`${styles.btn} ${loading ? styles.btn__active : ''}`}
+                onClick={() => onTranslate()}
+                disabled={!active}
+            >
+                {btnText}
             </button>
         </div>
     );

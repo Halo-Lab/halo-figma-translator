@@ -3,6 +3,14 @@ var TEXTS = [];
 
 figma.showUI(__html__, {width: 300, height: 215});
 
+figma.on('run', () => {
+    checkSelection();
+});
+
+figma.on('selectionchange', () => {
+    checkSelection();
+});
+
 figma.ui.onmessage = (msg) => {
     if (msg.type === 'get-text') {
         const {selection} = figma.currentPage;
@@ -50,3 +58,11 @@ figma.ui.onmessage = (msg) => {
 
     // figma.closePlugin();
 };
+
+function checkSelection() {
+    const {selection} = figma.currentPage;
+    figma.ui.postMessage({
+        type: 'check-selection',
+        status: typeof selection !== 'undefined' && selection.length > 0,
+    });
+}
