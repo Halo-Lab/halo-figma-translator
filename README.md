@@ -1,21 +1,26 @@
-# Figma Plugin React Template
+# HaloLab Figma Translator
+<br />
 
-![62862431-71537f00-bd0e-11e9-85db-d97c0fb729a4](https://user-images.githubusercontent.com/16322616/62862692-46b5f600-bd0f-11e9-93b0-75955d1de8f3.png)
+<b>For designers:</b>
+1. Code > Download ZIP
+2. Unpack archive
+3. Go to Figma
+4. Main menu > Plugins > Development > Import plugin from manifest...
+5. Select the `manifest.json` file from this the unpacked archive
+<br />
 
+<b>For developers:</b>
+1. `git clone https://github.com/Halo-Lab/halo-figma-translator.git`
+2. `yarn` - install dependencies
+3. `yarn build:watch` - development mode
+4. `yarn build` - production mode
 
-This template contains the react example as shown on [Figma Docs](https://www.figma.com/plugin-docs/intro/), with some structural changes and extra tooling.
+<br />
 
-## Quickstart
-* Run `yarn` to install dependencies.
-* Run `yarn build:watch` to start webpack in watch mode.
-* Open `Figma` -> `Plugins` -> `Development` -> `Import plugin from manifest...` and choose `manifest.json` file from this repo.
+## Word from author
 
-⭐ To change the UI of your plugin (the react code), start editing [App.tsx](./src/app/components/App.tsx).  
-⭐ To interact with the Figma API edit [controller.ts](./src/plugin/controller.ts).  
-⭐ Read more on the [Figma API Overview](https://www.figma.com/plugin-docs/api/api-overview/).
+Have fun! ✌️
 
-## Toolings
-This repo is using:
-* React + Webpack
-* TypeScript
-* Prettier precommit hook
+<a href="https://www.halo-lab.com/?utm_source=github">
+  <img src="https://dgestran.sirv.com/Images/supported-by-halolab.png" alt="Supported by Halo lab" height="60">
+</a>
